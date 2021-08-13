@@ -1,9 +1,14 @@
-FROM openjdk/zulu-openjdk:11
+FROM openjdk:11.0.12
 
 ENV SCALA_VERSION 2.12.14
 ENV SBT_VERSION 1.5.5
 ENV USER_ID 1001
 ENV GROUP_ID 1001
+
+# Install curl
+RUN \
+  apt-get update && \
+  apt-get -y --no-install-recommends install curl
 
 # Install sbt
 RUN \
@@ -23,12 +28,12 @@ RUN \
   mv $SCALA_DIR /usr/share/scala && \
   chown -R root:root /usr/share/scala && \
   chmod -R 755 /usr/share/scala && \
-  ln -s /usr/share/scala/bin/* /usr/local/bin && \
-  case $SCALA_VERSION in \
-    "3"*) echo "@main def main = println(util.Properties.versionMsg)" > test.scala ;; \
-    *) echo "println(util.Properties.versionMsg)" > test.scala ;; \
-  esac && \
-  scala test.scala && rm test.scala
+  ln -s /usr/share/scala/bin/* /usr/local/bin
+  # case $SCALA_VERSION in \
+    # "3"*) echo "@main def main = println(util.Properties.versionMsg)" > test.scala ;; \
+    # *) echo "println(util.Properties.versionMsg)" > test.scala ;; \
+  # esac && \
+  # scala test.scala && rm test.scala
 
 # Remove curl
 RUN \
